@@ -1,0 +1,38 @@
+pipeline {
+    agent none
+
+    stages {
+        stage('Build Docker Image') {
+            agent { docker 'manngupta/ansible_4_openshift_k8s:1.1' }
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/manngupta/ibm-aquasec.git'
+                sh 'docker build -t manngupta/centos-trivy:8 -f Dockerfile-Trivy'
+                //sh label: '', script: 'docker build -t manngupta/centos-trivy:8 -f Dockerfile-Trivy'
+            }
+
+        }
+    }
+}
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Generate Dockerfile') {
+            steps {
+cleanWs()
+sh label: '', script: """
+cat <<EOF > ${WORKSPACE}/Dockerfile
+FROM (centos:8)
+COPY trivy.repo /etc/yum.repos.d/trivy.repo
+RUN yum install -y trivy
+ENTRYPOINT ["trivy"]
+EOF
+"""
+    }
+}
+    }
+}
