@@ -22,6 +22,7 @@ pipeline {
         }
         stage('Push Image to Docker Hub') {
             steps {
+                input 'Would you like to Procced?'
                 sh label: '', script: 'docker push manngupta/devopsinaction:1.1'
             }
         }
