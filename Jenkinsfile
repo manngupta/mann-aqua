@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'manish'
+    }
     stages {
         stage('Scan Base Image') {
             steps {
