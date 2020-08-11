@@ -20,6 +20,11 @@ pipeline {
                 sh label: '', script: 'trivy client --remote http://35.174.200.136:8080 manngupta/devopsinaction:1.1'
             }
         }
+        stage('Push Image to Docker Hub') {
+            steps {
+                sh label: '', script: 'docker push manngupta/devopsinaction:1.1'
+            }
+        }
     }
 }
 
